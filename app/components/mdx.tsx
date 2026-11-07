@@ -125,6 +125,9 @@ export function CustomMDX(props) {
       {...props}
       components={{ ...components, ...(props.components || {}) }}
       options={{
+        // Posts are first-party content and pass props like images={[...]}.
+        // blockDangerousJS stays on by default.
+        blockJS: false,
         mdxOptions: {
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
