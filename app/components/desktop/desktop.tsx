@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react"
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { links, me } from "app/lib/desktop-content";
-import { About, Beautiful, Photos, Projects } from "./apps";
+import { About, Photos, Projects } from "./apps";
 import { BackOnTrackSetup } from "./backontrack-setup";
 import { LAB_WINDOWS, LabDocument } from "./learning-lab";
 import type { LabId } from "./learning-lab";
@@ -15,9 +15,9 @@ import { useDrag } from "./use-drag";
 import { Window } from "./window";
 import type { Rect } from "./window";
 
-type AppId = LabId | "about" | "projects" | "backontrack" | "photos" | "music" | "terminal" | "beautiful";
+type AppId = LabId | "about" | "projects" | "backontrack" | "photos" | "music" | "terminal";
 
-const APPS: Record<AppId, { title: string; icon?: string; w: number; h: number; dialog?: boolean }> = {
+const APPS: Record<AppId, { title: string; icon?: string; w: number; h: number }> = {
   about: { title: "about_me.txt", icon: "/desktop/about.webp", w: 460, h: 440 },
   projects: { title: "my projects", icon: "/desktop/projects.webp", w: 560, h: 380 },
   backontrack: { title: "BackOnTrack_Setup.exe", icon: "/desktop/backontrack/icon.svg", w: 680, h: 500 },
@@ -25,7 +25,6 @@ const APPS: Record<AppId, { title: string; icon?: string; w: number; h: number; 
   photos: { title: "camera roll", icon: "/desktop/digicam.webp", w: 680, h: 520 },
   music: { title: "mixtape player", icon: "/desktop/cd.webp", w: 460, h: 430 },
   terminal: { title: "kitten.exe", icon: "/desktop/cat.webp", w: 560, h: 360 },
-  beautiful: { title: "Error", w: 330, h: 150, dialog: true },
 };
 
 const ICONS: { app: AppId; label: string; alt: string }[] = [
@@ -160,23 +159,12 @@ export function Desktop({ className }: { className?: string }) {
     if (storage("get")) setBoot(false);
   }, []);
 
-  // First visit of the session: the compliment pops up once booting is done.
+  // First visit of the session: the boot screen plays once.
   useEffect(() => {
     if (storage("get")) return;
     const timer = window.setTimeout(() => {
       storage("set");
       setBoot(false);
-      const W = window.innerWidth;
-      dispatch({
-        type: "open",
-        id: "beautiful",
-        rect: {
-          x: Math.max(12, Math.min(W - 342, W * 0.62)),
-          y: Math.max(12, (window.innerHeight - 38) * 0.68),
-          w: Math.min(330, W - 24),
-          h: 150,
-        },
-      });
     }, 1700);
     return () => window.clearTimeout(timer);
   }, []);
@@ -204,9 +192,7 @@ export function Desktop({ className }: { className?: string }) {
       case "music":
         return <Music />;
       case "terminal":
-        return <Terminal onOpen={open} onCompliment={() => open("beautiful")} onExit={close} />;
-      case "beautiful":
-        return <Beautiful onDone={close} />;
+        return <Terminal onOpen={open} onExit={close} />;
       default:
         return <LabDocument id={id} onOpen={open} />;
     }
@@ -286,7 +272,6 @@ export function Desktop({ className }: { className?: string }) {
               active={top === win.id}
               minimized={win.minimized}
               maximized={win.maximized}
-              dialog={app.dialog}
               onFocus={() => dispatch({ type: "focus", id: win.id })}
               onClose={() => dispatch({ type: "close", id: win.id })}
               onMinimize={() => dispatch({ type: "minimize", id: win.id })}
@@ -345,7 +330,6 @@ export function Desktop({ className }: { className?: string }) {
         </button>
         <div className="taskbar__tasks">
           {windows
-            .filter((w) => !APPS[w.id].dialog)
             .slice()
             .sort((a, b) => a.id.localeCompare(b.id))
             .map((w) => (

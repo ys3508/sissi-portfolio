@@ -588,65 +588,6 @@
   caret-color: var(--pink);
 }
 
-/* you are beautiful */
-.win--dialog {
-  height: auto;
-}
-.win--dialog .win__body {
-  overflow: visible;
-}
-.alert {
-  position: relative;
-  padding: 12px 14px 12px;
-}
-.alert__row {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  font-size: 14px;
-}
-.alert__row p + p {
-  margin-top: 4px;
-}
-.alert__icon {
-  flex: none;
-  width: 34px;
-  height: 34px;
-  border: 2px solid var(--pink);
-  border-radius: 50% 50% 50% 8%;
-  background: #fff;
-  color: var(--pink-deep);
-  font: 700 21px/30px var(--ff-pixel);
-  text-align: center;
-}
-.alert__buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 12px;
-}
-.alert__buttons .btn {
-  transition: translate 90ms steps(2);
-}
-.alert__hearts {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.alert__hearts span {
-  position: absolute;
-  bottom: 10px;
-  color: var(--pink);
-  font-size: 20px;
-  animation: float-up 850ms ease-out both;
-}
-@keyframes float-up {
-  to {
-    opacity: 0;
-    transform: translateY(-170px) rotate(25deg);
-  }
-}
-
 /* BackOnTrack setup wizard */
 .setup {
   display: flex;
@@ -1577,7 +1518,7 @@
 
 /* ---------- small screens: windows fill the screen ---------- */
 @media (max-width: 640px) {
-  .win:not(.win--dialog) {
+  .win {
     left: 0 !important;
     top: 0 !important;
     width: 100% !important;
@@ -1658,8 +1599,7 @@
 @media (prefers-reduced-motion: reduce) {
   .sticker,
   .win,
-  .music__cd--spin,
-  .alert__hearts span {
+  .music__cd--spin {
     animation: none;
   }
   .boot {

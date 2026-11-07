@@ -8,11 +8,9 @@ type Line = { kind: "in" | "out"; text: string };
 
 export function Terminal({
   onOpen,
-  onCompliment,
   onExit,
 }: {
   onOpen: (app: (typeof APPS)[number]) => void;
-  onCompliment: () => void;
   onExit: () => void;
 }) {
   const prompt = `${me.handle}@pink98 ~ %`;
@@ -75,10 +73,6 @@ export function Terminal({
         break;
       case "date":
         out = say(new Date().toString());
-        break;
-      case "sudo":
-        onCompliment();
-        out = say("permission granted: you are beautiful.");
         break;
       case "clear":
         setLines([]);

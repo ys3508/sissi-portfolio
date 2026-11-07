@@ -17,7 +17,6 @@ type Props = {
   active: boolean;
   minimized: boolean;
   maximized: boolean;
-  dialog?: boolean;
   onFocus: () => void;
   onClose: () => void;
   onMinimize: () => void;
@@ -34,7 +33,6 @@ export function Window({
   active,
   minimized,
   maximized,
-  dialog,
   onFocus,
   onClose,
   onMinimize,
@@ -46,7 +44,7 @@ export function Window({
 
   const move = useDrag(
     (dx, dy) => {
-      if (maximized || (isSmallScreen() && !dialog)) return;
+      if (maximized || isSmallScreen()) return;
       const maxX = window.innerWidth - 80;
       const maxY = window.innerHeight - TASKBAR - 28;
       onRect({
@@ -67,21 +65,20 @@ export function Window({
     "win",
     active && "win--active",
     maximized && "win--max",
-    dialog && "win--dialog",
   ]
     .filter(Boolean)
     .join(" ");
 
   return (
     <section
-      role={dialog ? "alertdialog" : "dialog"}
+      role="dialog"
       aria-label={title}
       className={className}
       style={{
         left: rect.x,
         top: rect.y,
         width: rect.w,
-        height: dialog ? undefined : rect.h,
+        height: rect.h,
         zIndex: z,
         display: minimized ? "none" : undefined,
       }}
@@ -94,28 +91,24 @@ export function Window({
           origin.current = rect;
           move.bind.onPointerDown(e);
         }}
-        onDoubleClick={dialog ? undefined : onMaximize}
+        onDoubleClick={onMaximize}
       >
         {icon && <img src={icon} alt="" className="win__icon" draggable={false} />}
         <h2 className="win__title">{title}</h2>
         <div className="win__controls" data-nodrag>
-          {!dialog && (
-            <>
-              <button type="button" aria-label={`Minimize ${title}`} onClick={onMinimize}>
-                <span aria-hidden>_</span>
-              </button>
-              <button type="button" aria-label={`Maximize ${title}`} onClick={onMaximize} className="win__max-btn">
-                <span aria-hidden>□</span>
-              </button>
-            </>
-          )}
+          <button type="button" aria-label={`Minimize ${title}`} onClick={onMinimize}>
+            <span aria-hidden>_</span>
+          </button>
+          <button type="button" aria-label={`Maximize ${title}`} onClick={onMaximize} className="win__max-btn">
+            <span aria-hidden>□</span>
+          </button>
           <button type="button" aria-label={`Close ${title}`} onClick={onClose}>
             <span aria-hidden>×</span>
           </button>
         </div>
       </header>
       <div className="win__body">{children}</div>
-      {!dialog && !maximized && (
+      {!maximized && (
         <div
           className="win__grip"
           aria-hidden
