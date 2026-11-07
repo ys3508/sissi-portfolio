@@ -7,17 +7,19 @@ import Link from "next/link";
 import { links, me } from "app/lib/desktop-content";
 import { About, Beautiful, Photos, Projects, Writing } from "./apps";
 import type { PostLink } from "./apps";
+import { BackOnTrackSetup } from "./backontrack-setup";
 import { Music } from "./music";
 import { Terminal } from "./terminal";
 import { useDrag } from "./use-drag";
 import { Window } from "./window";
 import type { Rect } from "./window";
 
-type AppId = "about" | "projects" | "writing" | "photos" | "music" | "terminal" | "beautiful";
+type AppId = "about" | "projects" | "backontrack" | "writing" | "photos" | "music" | "terminal" | "beautiful";
 
 const APPS: Record<AppId, { title: string; icon?: string; w: number; h: number; dialog?: boolean }> = {
   about: { title: "about_me.txt", icon: "/desktop/about.webp", w: 460, h: 440 },
   projects: { title: "my projects", icon: "/desktop/projects.webp", w: 560, h: 380 },
+  backontrack: { title: "BackOnTrack_Setup.exe", icon: "/desktop/backontrack/icon.svg", w: 680, h: 500 },
   writing: { title: "love letters", icon: "/desktop/bunny.webp", w: 520, h: 360 },
   photos: { title: "camera roll", icon: "/desktop/digicam.webp", w: 680, h: 520 },
   music: { title: "mixtape player", icon: "/desktop/cd.webp", w: 460, h: 430 },
@@ -193,7 +195,9 @@ export function Desktop({ posts, className }: { posts: PostLink[]; className?: s
       case "about":
         return <About />;
       case "projects":
-        return <Projects />;
+        return <Projects onOpenSetup={() => open("backontrack")} />;
+      case "backontrack":
+        return <BackOnTrackSetup onClose={close} />;
       case "writing":
         return <Writing posts={posts} />;
       case "photos":

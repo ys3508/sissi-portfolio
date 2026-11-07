@@ -3,14 +3,19 @@ export interface Project {
   year: number;
   description: string;
   url: string;
+  icon?: string;
+  /** On the desktop homepage, opens the setup wizard instead of the link. */
+  hasSetup?: boolean;
 }
 
 export const projects: Project[] = [
   {
-    title: "Mithril AI",
-    year: 2024,
-    description: "Open science AI resarch lab",
-    url: "https://github.com/mithrilai",
+    title: "BackOnTrack",
+    year: 2026,
+    description: "AI app · When plans fall apart, find your way forward",
+    url: "https://backontrack-peach.vercel.app",
+    icon: "/desktop/backontrack/icon.svg",
+    hasSetup: true,
   },
   {
     title: "OpenDeepLearning",

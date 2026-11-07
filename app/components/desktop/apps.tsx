@@ -25,7 +25,7 @@ export function About() {
   );
 }
 
-export function Projects() {
+export function Projects({ onOpenSetup }: { onOpenSetup: () => void }) {
   return (
     <div className="explorer">
       <div className="explorer__address">
@@ -33,20 +33,33 @@ export function Projects() {
         <code>C:\{me.handle}\projects</code>
       </div>
       <ul className="list">
-        {projects.map((p) => (
-          <li key={p.title}>
-            <a className="list__row" href={p.url} target="_blank" rel="noreferrer">
+        {projects.map((p) => {
+          const row = (
+            <>
               <span className="list__main">
-                <img src="/desktop/projects.webp" alt="" />
+                <img src={p.icon ?? "/desktop/projects.webp"} alt="" />
                 <span>
                   <strong>{p.title}</strong>
                   <small>{p.description}</small>
                 </span>
               </span>
               <span className="list__meta">{p.year}</span>
-            </a>
-          </li>
-        ))}
+            </>
+          );
+          return (
+            <li key={p.title}>
+              {p.hasSetup ? (
+                <button type="button" className="list__row" onClick={onOpenSetup}>
+                  {row}
+                </button>
+              ) : (
+                <a className="list__row" href={p.url} target="_blank" rel="noreferrer">
+                  {row}
+                </a>
+              )}
+            </li>
+          );
+        })}
       </ul>
       <p className="statusbar">
         {projects.length} objects · <Link href="/projects">open classic view</Link>

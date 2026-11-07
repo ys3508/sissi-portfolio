@@ -19,6 +19,12 @@
   font: 13px/1.45 var(--ui);
   user-select: none;
 }
+/* Pixelify Sans draws "fi" as a glyph that reads like a capital A.
+   !important because every `font` shorthand resets ligatures. */
+.desk,
+.desk * {
+  font-variant-ligatures: none !important;
+}
 .desk ::selection {
   background: var(--pink);
   color: #fff;
@@ -639,6 +645,290 @@
   }
 }
 
+/* BackOnTrack setup wizard */
+.setup {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+.setup__main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.setup__banner {
+  position: relative;
+  flex: none;
+  width: 132px;
+  overflow: hidden;
+  padding: 14px 10px;
+  background: linear-gradient(170deg, var(--pink-deep), var(--pink) 55%, #f7a5cb);
+  color: #fff;
+}
+.setup__banner p {
+  font: 700 27px/1 var(--ff-pixel);
+  text-shadow: 2px 2px 0 var(--pink-deep);
+}
+.setup__banner small {
+  display: block;
+  margin-top: 8px;
+  font: 17px/1 var(--ff-term);
+}
+.setup__banner img {
+  position: absolute;
+  right: -14px;
+  bottom: -8px;
+  width: 136px;
+  filter: drop-shadow(2px 3px 2px rgb(58 26 44 / 0.35));
+}
+.setup__page {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: 14px 16px;
+  background: var(--paper);
+  box-shadow: inset 1px 1px var(--dark), inset -1px -1px var(--light);
+}
+.setup__page > * + * {
+  margin-top: 9px;
+}
+.setup__page h3 {
+  color: var(--pink-deep);
+  font: 700 21px/1.15 var(--ff-pixel);
+}
+.setup__page .setup__big {
+  font-size: 30px;
+}
+.setup__kicker {
+  color: var(--dark);
+  font-size: 12px;
+  font-weight: 700;
+}
+.setup__ask {
+  font-weight: 700;
+}
+.setup__note {
+  color: var(--dark);
+  font-size: 12px;
+}
+.setup__choices {
+  display: grid;
+  gap: 2px;
+}
+.setup__choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+.setup__choice:hover {
+  background: var(--face);
+}
+.setup__choice input {
+  flex: none;
+  margin-top: 3px;
+  accent-color: var(--pink-deep);
+}
+.setup__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.setup__row--end {
+  justify-content: flex-end;
+}
+.setup__row--links .btn {
+  display: inline-block;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+}
+.setup__default {
+  font-weight: 700;
+  outline: 1px solid var(--ink);
+}
+.setup__plan {
+  padding: 10px 12px;
+  background: #eaffd9;
+  box-shadow: inset 1px 1px var(--shade), inset -1px -1px var(--light), 2px 3px 0 rgb(125 63 96 / 0.3);
+}
+.setup__plan > * + * {
+  margin-top: 8px;
+}
+.setup__action {
+  font: 700 18px/1.25 var(--ff-pixel);
+}
+.setup__gap {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  font-size: 12px;
+}
+.setup__gap dt {
+  color: var(--pink-deep);
+  font-weight: 700;
+}
+.setup__timer > * + * {
+  margin-top: 6px;
+}
+.setup__lcd {
+  display: inline-block;
+  padding: 2px 10px;
+  background: #2c1422;
+  color: #ffb3d6;
+  font: 28px/1.1 var(--ff-term);
+  box-shadow: inset 1px 1px var(--dark), inset -1px -1px var(--light);
+}
+.setup__bar {
+  height: 12px;
+  padding: 2px;
+  background: var(--paper);
+  box-shadow: inset 1px 1px var(--dark), inset -1px -1px var(--light);
+}
+.setup__bar span {
+  display: block;
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--pink) 0 8px, transparent 8px 10px);
+}
+.setup__bar--wide {
+  height: 16px;
+}
+.setup__error {
+  padding: 3px;
+  background: var(--face);
+  box-shadow: inset -1px -1px var(--dark), inset 1px 1px var(--light), inset -2px -2px var(--shade), 3px 4px 0 rgb(58 26 44 / 0.2);
+}
+.setup__error-bar {
+  padding: 2px 6px;
+  background: linear-gradient(90deg, var(--pink), #f7a5cb);
+  color: #fff;
+  font-weight: 700;
+}
+.setup__error-body {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 8px;
+}
+.setup__error-icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--pink-deep);
+  color: #fff;
+  font: 700 25px/29px var(--ui);
+  text-align: center;
+  box-shadow: 1px 1px 0 var(--dark);
+}
+.setup__error .setup__row {
+  padding: 0 6px 6px;
+}
+.setup__reply {
+  padding: 0 8px 6px;
+  color: var(--pink-deep);
+  text-align: right;
+}
+.setup__loop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  font: 18px/1.1 var(--ff-term);
+  list-style: none;
+}
+.setup__loop li:not(:last-child)::after {
+  content: "→";
+  margin: 0 6px;
+  color: var(--pink-deep);
+}
+.setup__tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: -9px;
+  padding-left: 4px;
+}
+.setup__tab {
+  position: relative;
+  z-index: 1;
+  padding: 3px 14px;
+  background: var(--face);
+  color: inherit;
+  font: inherit;
+  box-shadow: inset 1px 1px var(--light), inset -1px 0 var(--dark);
+  cursor: pointer;
+}
+.setup__tab--on {
+  padding-bottom: 5px;
+  background: #fff;
+  color: var(--pink-deep);
+  font-weight: 700;
+}
+.setup__sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px;
+  background: #fff;
+  box-shadow: inset 1px 1px var(--light), inset -1px -1px var(--dark), inset -2px -2px var(--shade);
+}
+.setup__sheet img {
+  width: 100%;
+  height: auto;
+  box-shadow: 0 0 0 1px var(--shade), 2px 3px 0 rgb(58 26 44 / 0.2);
+}
+.setup__sheet h4 {
+  color: var(--pink-deep);
+  font: 700 16px/1.2 var(--ff-pixel);
+}
+.setup__sheet p {
+  margin-top: 6px;
+  font-size: 12px;
+}
+.setup__limit b {
+  color: var(--pink-deep);
+}
+.setup__readme {
+  font: 18px/1.15 var(--ff-term);
+  user-select: text;
+}
+.setup__readme h4 {
+  margin-top: 12px;
+  color: var(--pink-deep);
+  font: inherit;
+}
+.setup__foot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 7px 18px 5px 6px;
+}
+.setup__progress {
+  flex: 1;
+  min-width: 0;
+  max-width: 260px;
+  font-size: 12px;
+}
+.setup__progress > span {
+  display: block;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.setup__nav {
+  display: flex;
+  flex: none;
+  gap: 6px;
+}
+.setup__nav .btn:disabled {
+  color: var(--shade);
+  text-shadow: 1px 1px var(--light);
+  cursor: default;
+}
+
 /* ---------- taskbar & start ---------- */
 .taskbar {
   position: relative;
@@ -867,6 +1157,15 @@
   }
   .sticker:not([style*="--m-left"]) {
     display: none;
+  }
+  .setup__banner {
+    display: none;
+  }
+  .setup__sheet {
+    grid-template-columns: 1fr;
+  }
+  .setup__foot {
+    padding-right: 6px;
   }
 }
 
