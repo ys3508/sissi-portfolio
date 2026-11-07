@@ -1,20 +1,13 @@
-import { Navbar } from "../components/nav";
-import Footer from "../components/footer";
+import "../components/desktop/desktop.css";
+import { ClassicWindow } from "../components/classic-window";
+import { pixel, term } from "../lib/desktop-fonts";
 
-// Classic, quiet reading layout for blog / projects / photos.
-// The homepage lives outside this group so it can go full-bleed.
-export default function SiteLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+// Blog, projects and photos open as one long retro window.
+// The homepage lives outside this group so it can be the desktop.
+export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center mx-auto mt-2 lg:mt-8 mb-12">
-      <main className="flex-auto min-w-0 mt-2 md:mt-6 flex flex-col px-6 sm:px-4 md:px-0 max-w-[624px] w-full">
-        <Navbar />
-        {children}
-        <Footer />
-      </main>
+    <div className={`classic ${pixel.variable} ${term.variable}`}>
+      <ClassicWindow>{children}</ClassicWindow>
     </div>
   );
 }

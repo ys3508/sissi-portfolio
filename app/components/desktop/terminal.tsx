@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { links, me } from "app/lib/desktop-content";
 
-const APPS = ["about", "projects", "writing", "photos", "music"] as const;
+const APPS = ["about", "projects", "lab", "photos", "music"] as const;
 type Line = { kind: "in" | "out"; text: string };
 
 export function Terminal({
@@ -42,7 +42,7 @@ export function Terminal({
           "whoami          who lives here",
           "ls              what's on the desktop",
           "cat about.txt   read the about file",
-          "open <app>      about, projects, writing, photos, music",
+          "open <app>      about, projects, lab, photos, music",
           "links           where else to find me",
           "meow            important",
           "clear           tidy up",

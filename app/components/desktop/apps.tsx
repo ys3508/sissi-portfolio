@@ -5,8 +5,6 @@ import Link from "next/link";
 import { me, photos } from "app/lib/desktop-content";
 import { projects } from "app/(site)/projects/project-data";
 
-export type PostLink = { slug: string; title: string; date: string };
-
 export function About() {
   return (
     <div className="notepad">
@@ -62,34 +60,7 @@ export function Projects({ onOpenSetup }: { onOpenSetup: () => void }) {
         })}
       </ul>
       <p className="statusbar">
-        {projects.length} objects · <Link href="/projects">open classic view</Link>
-      </p>
-    </div>
-  );
-}
-
-export function Writing({ posts }: { posts: PostLink[] }) {
-  return (
-    <div className="explorer">
-      <div className="explorer__address">
-        <span>Address</span>
-        <code>C:\{me.handle}\love_letters</code>
-      </div>
-      <ul className="list">
-        {posts.map((p) => (
-          <li key={p.slug}>
-            <Link className="list__row" href={`/blog/${p.slug}`}>
-              <span className="list__main">
-                <img src="/desktop/bunny.webp" alt="" />
-                <strong>{p.title}.txt</strong>
-              </span>
-              <span className="list__meta">{p.date}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <p className="statusbar">
-        {posts.length} letters · <Link href="/blog">open classic view</Link>
+        {projects.length} {projects.length === 1 ? "object" : "objects"} · <Link href="/projects">open classic view</Link>
       </p>
     </div>
   );

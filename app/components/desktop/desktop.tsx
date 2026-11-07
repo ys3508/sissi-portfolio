@@ -5,22 +5,23 @@ import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react"
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { links, me } from "app/lib/desktop-content";
-import { About, Beautiful, Photos, Projects, Writing } from "./apps";
-import type { PostLink } from "./apps";
+import { About, Beautiful, Photos, Projects } from "./apps";
 import { BackOnTrackSetup } from "./backontrack-setup";
+import { LAB_WINDOWS, LabDocument } from "./learning-lab";
+import type { LabId } from "./learning-lab";
 import { Music } from "./music";
 import { Terminal } from "./terminal";
 import { useDrag } from "./use-drag";
 import { Window } from "./window";
 import type { Rect } from "./window";
 
-type AppId = "about" | "projects" | "backontrack" | "writing" | "photos" | "music" | "terminal" | "beautiful";
+type AppId = LabId | "about" | "projects" | "backontrack" | "photos" | "music" | "terminal" | "beautiful";
 
 const APPS: Record<AppId, { title: string; icon?: string; w: number; h: number; dialog?: boolean }> = {
   about: { title: "about_me.txt", icon: "/desktop/about.webp", w: 460, h: 440 },
   projects: { title: "my projects", icon: "/desktop/projects.webp", w: 560, h: 380 },
   backontrack: { title: "BackOnTrack_Setup.exe", icon: "/desktop/backontrack/icon.svg", w: 680, h: 500 },
-  writing: { title: "love letters", icon: "/desktop/bunny.webp", w: 520, h: 360 },
+  ...LAB_WINDOWS,
   photos: { title: "camera roll", icon: "/desktop/digicam.webp", w: 680, h: 520 },
   music: { title: "mixtape player", icon: "/desktop/cd.webp", w: 460, h: 430 },
   terminal: { title: "kitten.exe", icon: "/desktop/cat.webp", w: 560, h: 360 },
@@ -30,7 +31,7 @@ const APPS: Record<AppId, { title: string; icon?: string; w: number; h: number; 
 const ICONS: { app: AppId; label: string; alt: string }[] = [
   { app: "about", label: "about_me.txt", alt: "Halftone ribbon icon" },
   { app: "projects", label: "projects", alt: "Pink New York folder" },
-  { app: "writing", label: "love letters", alt: "Bunny hugging a pink heart" },
+  { app: "lab", label: "learning_lab.doc", alt: "Pink document file with a heart" },
   { app: "photos", label: "camera roll", alt: "Stickered digital camera" },
   { app: "music", label: "mixtape", alt: "Stickered mixtape CD" },
   { app: "terminal", label: "kitten.exe", alt: "Kitten wearing headphones" },
@@ -38,11 +39,11 @@ const ICONS: { app: AppId; label: string; alt: string }[] = [
 
 // `mobile` is [left, top] on phones; stickers without it are hidden there.
 const STICKERS: { id: string; alt: string; app?: AppId; left: string; top: string; size: string; rotate: number; mobile?: [string, string] }[] = [
-  { id: "camcorder", alt: "Stickered silver camcorder", app: "photos", left: "21%", top: "7%", size: "23vmin", rotate: -6, mobile: ["5%", "72%"] },
-  { id: "headphones", alt: "Halftone headphones with red stars", app: "music", left: "48%", top: "3%", size: "17vmin", rotate: 7 },
-  { id: "ipod", alt: "Pink music player covered in stickers", app: "music", left: "80%", top: "6%", size: "21vmin", rotate: 6, mobile: ["39%", "70%"] },
-  { id: "horse", alt: "Hand-drawn horse in star boots", left: "79%", top: "58%", size: "24vmin", rotate: -4, mobile: ["71%", "72%"] },
-  { id: "dog", alt: "Halftone puppy peering at you", left: "19%", top: "65%", size: "19vmin", rotate: 5 },
+  { id: "camcorder", alt: "Stickered silver camcorder", app: "photos", left: "41%", top: "72%", size: "23vmin", rotate: -6, mobile: ["5%", "79%"] },
+  { id: "headphones", alt: "Halftone headphones with red stars", app: "music", left: "47%", top: "2%", size: "17vmin", rotate: 7 },
+  { id: "ipod", alt: "Pink music player covered in stickers", app: "music", left: "70%", top: "5%", size: "21vmin", rotate: 6, mobile: ["39%", "79%"] },
+  { id: "horse", alt: "Hand-drawn horse in star boots", left: "67%", top: "58%", size: "24vmin", rotate: -4, mobile: ["71%", "79%"] },
+  { id: "dog", alt: "Halftone puppy peering at you", left: "23%", top: "60%", size: "19vmin", rotate: 5 },
 ];
 
 type Win = { id: AppId; rect: Rect; minimized: boolean; maximized: boolean };
@@ -127,7 +128,7 @@ function Sticker({ sticker, onOpen }: { sticker: (typeof STICKERS)[number]; onOp
   );
 }
 
-export function Desktop({ posts, className }: { posts: PostLink[]; className?: string }) {
+export function Desktop({ className }: { className?: string }) {
   const [windows, dispatch] = useReducer(reducer, []);
   const [selected, setSelected] = useState<AppId | null>(null);
   const [startOpen, setStartOpen] = useState(false);
@@ -198,8 +199,6 @@ export function Desktop({ posts, className }: { posts: PostLink[]; className?: s
         return <Projects onOpenSetup={() => open("backontrack")} />;
       case "backontrack":
         return <BackOnTrackSetup onClose={close} />;
-      case "writing":
-        return <Writing posts={posts} />;
       case "photos":
         return <Photos />;
       case "music":
@@ -208,6 +207,8 @@ export function Desktop({ posts, className }: { posts: PostLink[]; className?: s
         return <Terminal onOpen={open} onCompliment={() => open("beautiful")} onExit={close} />;
       case "beautiful":
         return <Beautiful onDone={close} />;
+      default:
+        return <LabDocument id={id} onOpen={open} />;
     }
   };
 

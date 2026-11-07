@@ -17,10 +17,4 @@ export const projects: Project[] = [
     icon: "/desktop/backontrack/icon.svg",
     hasSetup: true,
   },
-  {
-    title: "OpenDeepLearning",
-    year: 2023,
-    description: "Open source AI education resources",
-    url: "https://opendeeplearning.xyz/",
-  },
 ];
