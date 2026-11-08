@@ -24,4 +24,11 @@ export const projects: Project[] = [
     url: "/truth-not-found",
     icon: "/desktop/truth-orb.webp",
   },
+  {
+    title: "PIXEL.exe",
+    year: 2026,
+    description: "CNN lab · Draw a digit and watch a real network read it",
+    url: "/pixel",
+    icon: "/desktop/pixel-card.webp",
+  },
 ];

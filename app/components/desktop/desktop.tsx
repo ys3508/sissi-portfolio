@@ -16,7 +16,7 @@ import { useDrag } from "./use-drag";
 import { Window } from "./window";
 import type { Rect } from "./window";
 
-type AppId = LabId | "truth" | "about" | "projects" | "backontrack" | "photos" | "music" | "terminal";
+type AppId = LabId | "truth" | "pixel" | "about" | "projects" | "backontrack" | "photos" | "music" | "terminal";
 
 const APPS: Record<AppId, { title: string; icon?: string; w: number; h: number }> = {
   about: { title: "about_me.txt", icon: "/desktop/about.webp", w: 460, h: 440 },
@@ -24,6 +24,7 @@ const APPS: Record<AppId, { title: string; icon?: string; w: number; h: number }
   backontrack: { title: "BackOnTrack_Setup.exe", icon: "/desktop/backontrack/icon.svg", w: 680, h: 500 },
   ...LAB_WINDOWS,
   truth: { title: "404: Truth Not Found", icon: "/desktop/truth-orb.webp", w: 0, h: 0 },
+  pixel: { title: "PIXEL.exe", icon: "/desktop/pixel-card.webp", w: 0, h: 0 },
   photos: { title: "camera roll", icon: "/desktop/digicam.webp", w: 680, h: 520 },
   music: { title: "mixtape player", icon: "/desktop/cd.webp", w: 460, h: 430 },
   terminal: { title: "kitten.exe", icon: "/desktop/cat.webp", w: 560, h: 360 },
@@ -34,6 +35,7 @@ const ICONS: { app: AppId; label: string; alt: string }[] = [
   { app: "projects", label: "projects", alt: "Pink New York folder" },
   { app: "lab", label: "learning_lab.doc", alt: "Pink document file with a heart" },
   { app: "truth", label: "404: Truth Not Found", alt: "Silver orb app icon" },
+  { app: "pixel", label: "PIXEL.exe", alt: "Memory card printed with a pastel eye" },
   { app: "photos", label: "camera roll", alt: "Stickered digital camera" },
   { app: "music", label: "mixtape", alt: "Stickered mixtape CD" },
   { app: "terminal", label: "kitten.exe", alt: "Kitten wearing headphones" },
@@ -140,8 +142,8 @@ export function Desktop({ className }: { className?: string }) {
   const [off, setOff] = useState(false);
 
   const open = (id: AppId) => {
-    if (id === "truth") {
-      router.push("/truth-not-found");
+    if (id === "truth" || id === "pixel") {
+      router.push(id === "truth" ? "/truth-not-found" : "/pixel");
       return;
     }
     const app = APPS[id];
@@ -200,6 +202,7 @@ export function Desktop({ className }: { className?: string }) {
       case "music":
         return <Music />;
       case "truth":
+      case "pixel":
         return null;
       case "terminal":
         return <Terminal onOpen={open} onExit={close} />;

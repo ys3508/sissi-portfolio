@@ -6,7 +6,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Window } from "../desktop/window";
-import type { Rect } from "../desktop/window";
+import { placeWindow, windowsReducer } from "../desktop/window-stack";
+import type { StackAction, StackWin } from "../desktop/window-stack";
 import { About, CaseFiles, EvidenceExplorer, Reflection, SafetyManual, SystemLog, TrustMonitor } from "./truth-apps";
 import { Case1, Case2, Case3, Case4, Case5, Case6 } from "./truth-cases";
 import { CASE_META, CLAIMS } from "./truth-data";
@@ -72,39 +73,6 @@ const DESKTOP_ICONS: { id: TruthAppId; label: string }[] = [
   { id: "about", label: "About This Experiment" },
   { id: "log", label: "System Log" },
 ];
-
-/* ---------- window stack ---------- */
-
-type Win = { id: TruthAppId; rect: Rect; minimized: boolean; maximized: boolean };
-type WinAction =
-  | { type: "open"; id: TruthAppId; rect: Rect }
-  | { type: "close" | "focus" | "toggleMin" | "minimize" | "maximize"; id: TruthAppId }
-  | { type: "rect"; id: TruthAppId; rect: Partial<Rect> };
-
-function windowsReducer(windows: Win[], action: WinAction): Win[] {
-  const current = windows.find((w) => w.id === action.id);
-  const raise = (win: Win) => [...windows.filter((w) => w.id !== win.id), win];
-  switch (action.type) {
-    case "open":
-      return raise(current ? { ...current, minimized: false } : { id: action.id, rect: action.rect, minimized: false, maximized: false });
-    case "close":
-      return windows.filter((w) => w.id !== action.id);
-    case "focus":
-      return current && windows.at(-1)?.id !== action.id ? raise(current) : windows;
-    case "minimize":
-      return windows.map((w) => (w.id === action.id ? { ...w, minimized: true } : w));
-    case "toggleMin": {
-      if (!current) return windows;
-      const top = windows.filter((w) => !w.minimized).at(-1);
-      if (top?.id === action.id) return windows.map((w) => (w.id === action.id ? { ...w, minimized: true } : w));
-      return raise({ ...current, minimized: false });
-    }
-    case "maximize":
-      return windows.map((w) => (w.id === action.id ? { ...w, maximized: !w.maximized } : w));
-    case "rect":
-      return windows.map((w) => (w.id === action.id ? { ...w, rect: { ...w.rect, ...action.rect } } : w));
-  }
-}
 
 const reducedMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -187,7 +155,7 @@ function Finale({ onClose }: { onClose: () => void }) {
 function Shell() {
   const { log } = useGame();
   const [booted, setBooted] = useState(false);
-  const [windows, dispatch] = useReducer(windowsReducer, []);
+  const [windows, dispatch] = useReducer(windowsReducer<TruthAppId>, [] as StackWin<TruthAppId>[]);
   const [notices, setNotices] = useState<(Notice & { key: number })[]>([]);
   const [startOpen, setStartOpen] = useState(false);
   const [sound, setSound] = useState(false);
@@ -234,21 +202,7 @@ function Shell() {
   const open = useCallback(
     (id: TruthAppId) => {
       const app = APPS[id];
-      const W = window.innerWidth;
-      const H = window.innerHeight - 38;
-      const w = Math.min(app.w, W - 24);
-      const h = Math.min(app.h, H - 24);
-      const step = (windows.length % 6) * 26;
-      dispatch({
-        type: "open",
-        id,
-        rect: {
-          x: Math.max(12, Math.min(W - w - 12, (W - w) / 2 + step - 60)),
-          y: Math.max(12, Math.min(H - h - 12, (H - h) / 2 + step - 50)),
-          w,
-          h,
-        },
-      });
+      dispatch({ type: "open", id, rect: placeWindow(app.w, app.h, windows.length) } as StackAction<TruthAppId>);
       setStartOpen(false);
       if (!windows.some((win) => win.id === id)) log(`Opened ${app.title}`);
     },
