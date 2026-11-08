@@ -6,6 +6,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Window } from "../desktop/window";
+import { useDrag } from "../desktop/use-drag";
 import { placeWindow, windowsReducer } from "../desktop/window-stack";
 import type { StackAction, StackWin } from "../desktop/window-stack";
 import { AboutProject } from "./about";
@@ -54,6 +55,44 @@ const DESKTOP: { id: PixelAppId; label: string }[] = [
   { id: "dashboard", label: "Experiment Log" },
   { id: "about", label: "About This Project" },
 ];
+
+// Translucent lab hardware on the desk. Drag them around; click one to open its program.
+const DEVICES: { id: string; src: string; alt: string; app: PixelAppId }[] = [
+  { id: "laptop", src: "/pixel/laptop.webp", alt: "Translucent laptop with a glowing pastel screen", app: "microscope" },
+  { id: "typewriter", src: "/pixel/typewriter.webp", alt: "Pink see-through typewriter computer with a round screen", app: "scanner" },
+  { id: "holo", src: "/pixel/holo.webp", alt: "Pink handheld projecting a hologram", app: "inside" },
+  { id: "pager", src: "/pixel/pager.webp", alt: "Clear pager with a holographic screen", app: "dashboard" },
+];
+
+function Device({ device, onOpen }: { device: (typeof DEVICES)[number]; onOpen: (id: PixelAppId) => void }) {
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [grabbed, setGrabbed] = useState(false);
+  const origin = useRef(offset);
+  const drag = useDrag(
+    (dx, dy) => setOffset({ x: origin.current.x + dx, y: origin.current.y + dy }),
+    () => setGrabbed(false),
+  );
+  return (
+    <button
+      type="button"
+      className={`px-device px-device--${device.id}${grabbed ? " px-device--grabbed" : ""}`}
+      style={{ translate: `${offset.x}px ${offset.y}px` }}
+      title={`Opens ${APPS[device.app].title}`}
+      aria-label={`${device.alt}. Opens ${APPS[device.app].title}.`}
+      {...drag.bind}
+      onPointerDown={(e) => {
+        origin.current = offset;
+        setGrabbed(true);
+        drag.bind.onPointerDown(e);
+      }}
+      onClick={() => {
+        if (!drag.moved.current) onOpen(device.app);
+      }}
+    >
+      <img src={device.src} alt="" draggable={false} />
+    </button>
+  );
+}
 
 const BOOT = ["Initializing visual cortex simulation...", "Loading neural network weights...", "Preparing image scanner...", "SYSTEM READY."];
 
@@ -108,7 +147,6 @@ function Desktop() {
   const [booted, setBooted] = useState(false);
   const [windows, dispatch] = useReducer(windowsReducer<PixelAppId>, [] as StackWin<PixelAppId>[]);
   const [startOpen, setStartOpen] = useState(false);
-  const [selected, setSelected] = useState<PixelAppId | null>(null);
   const [clock, setClock] = useState("");
 
   useEffect(() => {
@@ -133,14 +171,13 @@ function Desktop() {
       <main
         className="desk__area px-area"
         aria-hidden={!booted}
-        onPointerDown={(e) => {
-          if (e.target === e.currentTarget) setSelected(null);
-          setStartOpen(false);
-        }}
+        onPointerDown={() => setStartOpen(false)}
       >
-        <div className="px-wall" aria-hidden>
-          <img src="/pixel/laptop.webp" alt="" className="px-wall__art" draggable={false} />
-          <span className="px-wall__grid" />
+        <div className="px-wall" aria-hidden />
+        <div className="px-devices">
+          {DEVICES.map((d) => (
+            <Device key={d.id} device={d} onOpen={open} />
+          ))}
         </div>
 
         <section className="px-hero" aria-labelledby="px-title">
@@ -160,16 +197,9 @@ function Desktop() {
             <button
               type="button"
               key={id}
-              className={`icon px-icon${selected === id ? " icon--on" : ""}`}
+              className="icon px-icon"
               title={APPS[id].question}
-              onClick={() => (window.matchMedia("(pointer: coarse)").matches ? open(id) : setSelected(id))}
-              onDoubleClick={() => open(id)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  open(id);
-                }
-              }}
+              onClick={() => open(id)}
             >
               <img src={ICON[id]} alt="" draggable={false} />
               <span>{label}</span>
