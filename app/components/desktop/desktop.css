@@ -1533,9 +1533,12 @@
     left: 0;
     right: 0;
     top: 31%;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     justify-items: center;
     gap: 0;
+  }
+  .icons .icon {
+    width: 88px;
   }
   .hero {
     top: 67%;

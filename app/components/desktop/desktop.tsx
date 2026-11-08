@@ -4,6 +4,7 @@ import "./desktop.css";
 import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { links, me } from "app/lib/desktop-content";
 import { About, Photos, Projects } from "./apps";
 import { BackOnTrackSetup } from "./backontrack-setup";
@@ -15,13 +16,14 @@ import { useDrag } from "./use-drag";
 import { Window } from "./window";
 import type { Rect } from "./window";
 
-type AppId = LabId | "about" | "projects" | "backontrack" | "photos" | "music" | "terminal";
+type AppId = LabId | "truth" | "about" | "projects" | "backontrack" | "photos" | "music" | "terminal";
 
 const APPS: Record<AppId, { title: string; icon?: string; w: number; h: number }> = {
   about: { title: "about_me.txt", icon: "/desktop/about.webp", w: 460, h: 440 },
   projects: { title: "my projects", icon: "/desktop/projects.webp", w: 560, h: 380 },
   backontrack: { title: "BackOnTrack_Setup.exe", icon: "/desktop/backontrack/icon.svg", w: 680, h: 500 },
   ...LAB_WINDOWS,
+  truth: { title: "404: Truth Not Found", icon: "/desktop/truth-orb.webp", w: 0, h: 0 },
   photos: { title: "camera roll", icon: "/desktop/digicam.webp", w: 680, h: 520 },
   music: { title: "mixtape player", icon: "/desktop/cd.webp", w: 460, h: 430 },
   terminal: { title: "kitten.exe", icon: "/desktop/cat.webp", w: 560, h: 360 },
@@ -31,6 +33,7 @@ const ICONS: { app: AppId; label: string; alt: string }[] = [
   { app: "about", label: "about_me.txt", alt: "Halftone ribbon icon" },
   { app: "projects", label: "projects", alt: "Pink New York folder" },
   { app: "lab", label: "learning_lab.doc", alt: "Pink document file with a heart" },
+  { app: "truth", label: "404: Truth Not Found", alt: "Silver orb app icon" },
   { app: "photos", label: "camera roll", alt: "Stickered digital camera" },
   { app: "music", label: "mixtape", alt: "Stickered mixtape CD" },
   { app: "terminal", label: "kitten.exe", alt: "Kitten wearing headphones" },
@@ -129,6 +132,7 @@ function Sticker({ sticker, onOpen }: { sticker: (typeof STICKERS)[number]; onOp
 
 export function Desktop({ className }: { className?: string }) {
   const [windows, dispatch] = useReducer(reducer, []);
+  const router = useRouter();
   const [selected, setSelected] = useState<AppId | null>(null);
   const [startOpen, setStartOpen] = useState(false);
   const [clock, setClock] = useState("");
@@ -136,6 +140,10 @@ export function Desktop({ className }: { className?: string }) {
   const [off, setOff] = useState(false);
 
   const open = (id: AppId) => {
+    if (id === "truth") {
+      router.push("/truth-not-found");
+      return;
+    }
     const app = APPS[id];
     const W = window.innerWidth;
     const H = window.innerHeight - 38;
@@ -191,6 +199,8 @@ export function Desktop({ className }: { className?: string }) {
         return <Photos />;
       case "music":
         return <Music />;
+      case "truth":
+        return null;
       case "terminal":
         return <Terminal onOpen={open} onExit={close} />;
       default:

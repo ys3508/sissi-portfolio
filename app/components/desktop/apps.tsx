@@ -51,7 +51,7 @@ export function Projects({ onOpenSetup }: { onOpenSetup: () => void }) {
                   {row}
                 </button>
               ) : (
-                <a className="list__row" href={p.url} target="_blank" rel="noreferrer">
+                <a className="list__row" href={p.url} {...(p.url.startsWith("http") && { target: "_blank", rel: "noreferrer" })}>
                   {row}
                 </a>
               )}

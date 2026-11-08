@@ -17,4 +17,11 @@ export const projects: Project[] = [
     icon: "/desktop/backontrack/icon.svg",
     hasSetup: true,
   },
+  {
+    title: "404: Truth Not Found",
+    year: 2026,
+    description: "AI safety experiment · Not every helpful answer is safe to trust",
+    url: "/truth-not-found",
+    icon: "/desktop/truth-orb.webp",
+  },
 ];
